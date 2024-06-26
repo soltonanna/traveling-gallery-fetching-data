@@ -4,8 +4,7 @@
 This app based on React JS. (Sending Http Requests (e.g. Connecting to a Database), with backend code);
 
 
-## Install
-
+## Install Frontend
 ```sh
 npm install
 ```
@@ -14,11 +13,15 @@ npm install
 npm dev
 ```
 
+## Install Backend
 ```sh
 cd backend
-node app.js
 ```
 
 ```sh
-npm preview
+npm install
+```
+
+``` sh
+node app.js
 ```
