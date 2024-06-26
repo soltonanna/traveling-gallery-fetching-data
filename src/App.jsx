@@ -1,13 +1,15 @@
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback } from 'react';
+
+import logoImg from './assets/logo.png';
 
 import Places from './components/Places.jsx';
 import Modal from './components/Modal.jsx';
 import DeleteConfirmation from './components/DeleteConfirmation.jsx';
-import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
+import Error from './components/Error.jsx';
 
 import { updateUserPlaces, fetchUserPlaces } from './http.js';
-import Error from './components/Error.jsx';
+import { useFetch } from './hooks/useFetch.js';
 
 function App() {
   const selectedPlace = useRef();
@@ -15,28 +17,13 @@ function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState();
 
-  const [userPlaces, setUserPlaces] = useState([]);
-  const [isFetching, setIsFetching]= useState(false);
-  const [error, setError]= useState('');
+  const {
+    isFetching, 
+    error, 
+    fetchedData: userPlaces,
+    setFetchData: setUserPlaces
+  } = useFetch(fetchUserPlaces, []);
 
-  useEffect(() => {
-    async function fetchPlaces() {
-      try {
-        setIsFetching(true);
-
-        const userPlaces = await fetchUserPlaces();
-        setUserPlaces(userPlaces);
-      } catch (error) {
-        setError({ 
-          message: error.message || 'Could not fetch user places, please try again later.' 
-        });
-      }
-
-      setIsFetching(false);
-    }
-
-    fetchPlaces();
-  }, []);
 
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
@@ -87,10 +74,9 @@ function App() {
         message: error.message || 'Failed to delete place.'
       });
     }
-    
-
+  
     setModalIsOpen(false);
-  }, [userPlaces]);
+  }, [userPlaces, setUserPlaces]);
 
   return (
     <>
